@@ -7,6 +7,12 @@ k.loadRoot("./"); // A good idea for Itch.io publishing later
 
 k.loadFont("title", "fonts/BBHBogle-Regular.ttf")
 k.loadFont("sub","fonts/BebasNeue-Regular.ttf")
+k.loadFont("darksoul","fonts/OptimusPrinceps.ttf")
+
+k.loadSound("chime","audio/chime.mp3")
+k.loadSound("badchime","audio/badchime.mp3")
+k.loadSound("death","audio/death.mp3")
+
 
 k.loadSprite("bomb", "sprites/bomb.png")
 k.loadSprite("menu","sprites/menu.jpg")
@@ -23,7 +29,7 @@ const stars = [
 ];
 
 for (const name of stars){
-    k.loadSprite(name, `/sprites/${name}.png`)
+    k.loadSprite(name, `sprites/${name}.png`)
 }
 
 
@@ -109,24 +115,26 @@ k.scene("game",()=> {
  
 
 
-        k.onClick("thing", ()=> {
-            n = n+1;
-            k.shake(4);
-            k.destroy("thing")
-
-
+    k.onClick(`thing`, (thing)=> {
+         n = n+1;
+        k.shake(4);
+        k.destroy(thing)
+        k.play("chime")
         });    
 
+    k.onClick("bombthing", (bombthing) => {
+        k.play("badchime")
+        k.shake(10),
+        k.wait(0.3,() => {
+        k.go("gameover")})    
+        })
 
 
     function spawnthings (level,smin,smax){
 
-
-
-
-        loop (0.5, ()=> {
+        loop (1.5, ()=> {
             const xpos = k.width() +30;
-            const ypos = rand(0,k.height());
+            const ypos = rand(0,k.height() -20);
             const speed = rand (smin,smax);
             const isbomb = chance (0.2);
             const namething = isbomb ? "bomb" : choose(level);
@@ -147,13 +155,55 @@ k.scene("game",()=> {
         k.onUpdate("thing", (thing) => {
             thing.move(-thing.speed,0);
             if (thing.pos.x <-120){
-                k.destroy(thing)}
-        })
+                k.destroy(thing)
+        }})
 
     }
 
-spawnthings(stars,100,300);
+spawnthings(stars,100,150);
+
     });
+
+
+k.scene("gameover" , () => {
+    k.setBackground(rgb(172, 55, 55));
+    const title = k.add([
+        k.text ("You collected the wrong  \n radiation (oopsie ;3).",{font: "darksoul",size:40}),
+        k.anchor("center"),
+        k.pos(300,150)
+    ])
+    k.play("death");
+    k.tween(0,1,1,(opa) => title.opacity = opa )
+
+    const back = k.add([
+        "back",
+        k.text(" Back to game",{font:"darksoul",size:24}),
+        k.pos(250,200),
+        k.scale(),
+        k.area(),
+        k.body(),
+    ])
+
+    k.tween(0,1,2,(opa) => back.opacity = opa )
+
+
+        k.onHover("back",()=>{
+    k.tween(k.vec2(1),k.vec2(1.2),0.3,(opa) =>back.scale = opa);
+    })
+
+    k.onHoverEnd("back",()=>{
+    k.tween(k.vec2(1.2),k.vec2(1),0.2,(opa) => back.scale = opa);
+    })
+
+    k.onClick("back", ()=>{
+        k.go("game")
+    })
+
+
+
+
+})
+
 
 
 k.go("game");
