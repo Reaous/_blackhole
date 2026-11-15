@@ -12,6 +12,7 @@ k.loadFont("darksoul","fonts/OptimusPrinceps.ttf")
 k.loadSound("chime","audio/chime.mp3")
 k.loadSound("badchime","audio/badchime.mp3")
 k.loadSound("death","audio/death.mp3")
+k.loadSound("blackholevoices","audio/blackholesound.mp3")
 
 
 k.loadSprite("bomb", "sprites/bomb.png")
@@ -83,10 +84,13 @@ k.scene("game",()=> {
 
     k.setBackground(rgb(30, 30, 34))
 
-    k.add([
-        k.pos(450, 70), 
+    const blackhole = k.add([
+        k.pos(590, 160), 
         k.sprite("blackhole", {anim:"idle"}),
-        k.rotate(-20)]);
+        k.rotate(-10),
+        "blackhole",
+        k.anchor("center"),
+        k.z(10)]);
 
 //score bar        
 
@@ -143,6 +147,7 @@ k.scene("game",()=> {
             k.sprite(namething),
             k.pos(xpos,ypos),
             k.area(),
+            k.scale(),
             k.anchor("center"),
             "thing",
             isbomb ? "bombthing" : `${level}thing`,
@@ -158,7 +163,34 @@ k.scene("game",()=> {
                 k.destroy(thing)
         }})
 
+        k.onHover("thing",(thing)=> {
+            thing.scaleTo(1.4)
+        })
+
+        k.onHoverEnd("thing",(thing)=> {
+            thing.scaleTo(1)
+        })        
+
     }
+
+//cam shake , audio whenever near balckhole so tht player doesnt spawn camp 
+let scalething ;
+const blackholesound = k.play("blackholevoices", {volume:0,loop:true},"bsound")
+        k.onUpdate(()=>{
+        const mouse = k.mousePos();
+        const bhd = blackhole.pos.dist(mouse)
+        if (bhd < 150){
+            scalething = 1- bhd/150
+            k.shake(scalething)
+            blackholesound.volume = scalething - 0.6;
+        }
+        else{
+            blackholesound.volume =0 ;
+        }
+        });
+        
+
+
 
 spawnthings(stars,100,150);
 
@@ -172,7 +204,7 @@ k.scene("gameover" , () => {
         k.anchor("center"),
         k.pos(300,150)
     ])
-    k.play("death");
+    const music = k.play("death", {volume:0.7});
     k.tween(0,1,1,(opa) => title.opacity = opa )
 
     const back = k.add([
@@ -196,6 +228,7 @@ k.scene("gameover" , () => {
     })
 
     k.onClick("back", ()=>{
+        music.paused = true;
         k.go("game")
     })
 
