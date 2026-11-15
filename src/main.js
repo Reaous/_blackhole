@@ -94,7 +94,7 @@ k.scene("menu", ()=> {
     ])
 
     const title = k.add([
-        k.text("Blackh()le Radiation", {font:"Bold",size:34}),
+        k.text("Blackh()le Radiation", {font:"bold",size:34}),
         k.pos(283,150),
         k.z(5),
         "title",
@@ -132,6 +132,9 @@ k.scene("menu", ()=> {
 })
 
 k.scene("lore",()=> {
+    k.add([
+        k.sprite("stars")
+    ])
     k.add([
         k.text("The blackhole has split ,consumed everything.\nYour job is to retrieve the split parts\nand put them back.\nIf your get a chance ,destroy it. \n\n DO NOT PUT YOUR CURSOR NEAR IT.\n\n (collect the split parts via your cursor until \nthe bar fills up.)\n\n AVOID THE NOISE.\n\n(press enter)",{font:"bold",size:20}),
         k.pos(20,70)
@@ -440,10 +443,8 @@ k.scene("won", (level)=> {
 
     if (level ===0 ||level === 1){
     k.add([
-       k.sprite(levelname, {anim:"idle"},
+       k.sprite(levelname, {anim:"idle"}),
         k.opacity(0.8),
-        
-       )
   ])
     }
 
@@ -676,7 +677,7 @@ k.scene("end", ()=> {
 
 
 
-k.onKeyDown("enter" , ()=> {
+k.onKeyPress("enter" , ()=> {
     blackhole.opacity= 0;
     k.tween(1,0,0.5,(opa)=> text.opacity = (opa))
 
