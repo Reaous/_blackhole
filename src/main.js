@@ -21,9 +21,9 @@ k.loadSound("menu","audio/menu.mp3")
 k.loadSprite("bomb", "sprites/bomb.png")
 k.loadSprite("menu","sprites/menu.jpg")
 k.loadSprite("rat","sprites/ratticus.png")
-k.loadSprite("blackhole", "sprites/blackhole.png",
-    {sliceX:7 , anims: 
-        {idle : {from :0 , to : 6,loop:true ,speed:3}
+k.loadSprite("blackhole", "sprites/blackhole2.png",
+    {sliceX:6 , anims: 
+        {idle : {from :0 , to : 5,loop:true ,speed:3}
 }})
 k.loadSprite("stars","sprites/starsbackground.png",
     {sliceX:2,anims:
@@ -40,6 +40,10 @@ k.loadSprite("earth","sprites/earthbackground.png",
 k.loadSprite("levelbg","sprites/levelbackground.png", {sliceX:2 ,anims:
     {"idle": {from:0,to:1,loop:true,speed:0.7}}
 
+})
+
+k.loadSprite("blackend","sprites/blackholeend.png", {sliceX:6 ,anims:
+    {"idle": { from:0,to:5,speed:1}}
 })
 
 const earth = [
@@ -90,7 +94,7 @@ k.scene("menu", ()=> {
     ])
 
     const title = k.add([
-        k.text("Blackh()le Radiation", {font:"title",size:34}),
+        k.text("Blackh()le Radiation", {font:"Bold",size:34}),
         k.pos(283,150),
         k.z(5),
         "title",
@@ -122,9 +126,20 @@ k.scene("menu", ()=> {
 
     k.onClick("start", ()=>{
         music.paused =true;
-        k.go("levels")
+        k.go("lore")
     })
 
+})
+
+k.scene("lore",()=> {
+    k.add([
+        k.text("The blackhole has split ,consumed everything.\nYour job is to retrieve the split parts\nand put them back.\nIf your get a chance ,destroy it. \n\n DO NOT PUT YOUR CURSOR NEAR IT.\n\n (collect the split parts via your cursor until \nthe bar fills up.)\n\n AVOID THE NOISE.\n\n(press enter)",{font:"bold",size:20}),
+        k.pos(20,70)
+    ])
+
+    k.onKeyPress("enter", ()=> {
+        k.go("levels")
+    })
 })
 
 k.scene("levels", () => {
@@ -215,7 +230,7 @@ k.onClick("bookc",()=> {
 
 k.onClick("blackholec",()=>{
     currentlevel=4
-    k.go(game)
+    k.go("game")
 })
 
 
@@ -398,6 +413,9 @@ if (currentlevel === 2){
 }
 if (currentlevel===3){
    spawnthings(books,120,190)
+}
+if (currentlevel === 4){
+    k.go("end");
 }
     });
 
@@ -631,6 +649,63 @@ option.scaleTo(1)
 })
 
 })
+
+k.scene("end", ()=> {
+
+    k.add([
+    k.sprite('earth'),
+    k.opacity(0.4),
+    ])
+
+    const text = k.add ([
+        k.text("Use your power you learnt from the book\nto end the blackhole?\nPress enter",{font:"bold",size:30}),
+        k.color(rgb(203, 181, 181)),
+        k.pos(50,60),
+        "destroy"
+    ])
+
+    const blackhole = k.add([
+        k.pos(590, 160), 
+        k.sprite("blackhole", {anim:"idle"}),
+        k.rotate(-10),
+        k.opacity(1),
+        "blackhole",
+        "destroy",
+        k.anchor("center"),
+        k.z(10)]);    
+
+
+
+k.onKeyDown("enter" , ()=> {
+    blackhole.opacity= 0;
+    k.tween(1,0,0.5,(opa)=> text.opacity = (opa))
+
+    const blackholeend = k.add([
+        k.pos(590, 160), 
+        k.sprite("blackend", {anim:"idle"}),
+        k.rotate(-10),
+        k.opacity(1),
+        "blackhole",
+        "destroy",
+        k.anchor("center"),
+        k.z(10)]);
+
+    k.wait(7,()=> {
+        k.destroyAll('destroy')
+        const text2 = k.add([
+            k.text("Made with <3 by reaous ",{font:"bold",size:30}),
+            k.pos(190,200),
+            k.opacity(0)
+        ])
+        k.tween(0,1,0.3,(opa)=>text2.opacity=(opa))
+    })
+
+
+
+})
+    
+})
+
 
 k.go("menu");
 
