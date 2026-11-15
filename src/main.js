@@ -18,6 +18,7 @@ k.loadSound("flash", "audio/flash.mp3")
 
 k.loadSprite("bomb", "sprites/bomb.png")
 k.loadSprite("menu","sprites/menu.jpg")
+k.loadSprite("rat","sprites/ratticus.png")
 k.loadSprite("blackhole", "sprites/blackhole.png",
     {sliceX:7 , anims: 
         {idle : {from :0 , to : 6,loop:true ,speed:3}
@@ -35,7 +36,7 @@ k.loadSprite("earth","sprites/earthbackground.png",
 })    
 
 k.loadSprite("levelbg","sprites/levelbackground.png", {sliceX:2 ,anims:
-    {"idle": {from:0,to:1,loop:true,speed:0.5}}
+    {"idle": {from:0,to:1,loop:true,speed:0.7}}
 
 })
 
@@ -106,7 +107,7 @@ k.scene("menu", ()=> {
     })
 
     k.onClick("start", ()=>{
-        k.go("game")
+        k.go("levels")
     })
 
 })
@@ -124,7 +125,7 @@ k.add([
 //ew collisions 
 const starc =k.add([
     k.rect(50,50,),
-    k.opacity(0.4),
+    k.opacity(0),
     k.pos(130,270),
     k.color(rgb(247, 251, 247)),
     k.z(10),
@@ -135,7 +136,7 @@ const starc =k.add([
 
 const earthc =k.add([
     k.rect(50,50,),
-    k.opacity(0.4),
+    k.opacity(0),
     k.pos(185,170),
     k.color(rgb(247, 251, 247)),
     k.z(10),
@@ -146,7 +147,7 @@ const earthc =k.add([
 
 const ratc =k.add([
     k.rect(50,50,),
-    k.opacity(0.4),
+    k.opacity(0),
     k.pos(340,100),
     k.color(rgb(247, 251, 247)),
     k.z(10),
@@ -157,7 +158,7 @@ const ratc =k.add([
 
 const bookc =k.add([
     k.rect(50,50,),
-    k.opacity(0.4),
+    k.opacity(0),
     k.pos(450,220),
     k.color(rgb(247, 251, 247)),
     k.z(10),
@@ -168,7 +169,7 @@ const bookc =k.add([
 
 const blackholec =k.add([
     k.rect(50,50,),
-    k.opacity(0.4),
+    k.opacity(0),
     k.pos(290,280),
     k.color(rgb(247, 251, 247)),
     k.z(10),
@@ -176,6 +177,32 @@ const blackholec =k.add([
     k.body(),
     "blackholec"
 ])
+
+k.onClick("starc",()=> {
+    currentlevel=0
+    k.go("game")
+})
+
+k.onClick("earthc", () =>{
+     currentlevel=1
+     k.go("game")
+    })
+
+k.onClick("ratc", () =>{
+    currentlevel=2
+    k.go("game")
+})
+
+k.onClick("bookc",()=> {
+    currentlevel=3
+    k.go("game")
+})
+
+k.onClick("blackholec",()=>{
+    currentlevel=4
+    k.go(game)
+})
+
 
 
 
@@ -191,13 +218,15 @@ k.scene("game",()=> {
 
     if (currentlevel === 1){
         k.add ([
-            k.sprite("stars", {anim:"idle"})
+            k.sprite("stars", {anim:"idle"}),
+            k.opacity(0.7)
         ])
     }
 
     if (currentlevel === 2 ) {
         k.add([
-            k.sprite("earth", {anim:"idle"})
+            k.sprite("earth", {anim:"idle"}),
+            k.opacity(0.7),
         ])
     }
 
@@ -274,6 +303,8 @@ let score =0;
         })
 
 
+
+
     function spawnthings (level,smin,smax){
 
         loop (1.5, ()=> {
@@ -341,7 +372,7 @@ if (currentlevel === 1){
     spawnthings(earth,120,180);
 }
 if (currentlevel === 2){
-    throwthings(ratticus)
+    k.go("rat");
 }
 if (currentlevel===3){
    spawnthings(books,120,190)
@@ -450,6 +481,122 @@ k.scene("gameover" , () => {
 
 })
 
+k.scene("rat",() => {
+
+ 
+ k.setBackground(rgb(0,0,0));
+
+const background = k.add([
+k.sprite("earth"),
+k.opacity(0.6),
+])
+
+const blackhole = k.add([
+    k.pos(590, 160), 
+    k.sprite("blackhole", {anim:"idle"}),
+    k.rotate(-10),
+    "blackhole",
+    k.anchor("center"),
+    k.z(10)]);
+
+const rat = k.add([
+    k.sprite("rat"),
+    k.pos(50,50),
+    k.scale(0.5),
+    k.area(),
+    k.body(),
+    k.opacity(0),
+])    
 
 
-k.go("levels");
+const text =k.add([
+    k.text("PONCHO, WHERE ARE THE CROPS-", {size:15}),
+    k.pos(150,50),
+    k.z(1),
+    "destroy",
+    k.color(rgb(0,0,0)),
+    k.opacity(0)
+])
+
+const textbox =text.add([
+    k.rect(text.width + 30,text.height+30),
+    k.color(rgb(216, 231, 230)),
+    k.area(),
+    "destroy",
+    k.z(0),
+    k.opacity(0)
+])
+
+
+const option1 =k.add([
+    k.text("throw him in the black hole.",{size:15}),
+    k.area(),
+    k.pos(70,250),
+    k.scale(),
+    k.color(rgb(8, 8, 8)),
+    k.body(),
+    "option",
+    "destroy",
+    k.opacity(0),
+    k.z(1)
+])
+
+    const textbox2 =option1.add([
+    k.rect(option1.width + 10,option1.height+10),
+    k.color(rgb(216, 231, 230)),
+    k.area(),
+    k.opacity(0),
+    "destroy",
+    k.z(0)
+])
+
+    const option2 =k.add([
+    k.text(" throw him in the black hole elegantly :3",{size:15}),
+     k.pos(70,300),
+    k.area(),
+    k.color(rgb(0, 0, 0)),
+    k.scale(),
+    k.body(),
+    "option",
+    "destroy",
+    k.z(1),
+    k.opacity(0)
+])
+
+    const textbox3 =option2.add([
+    k.rect(option2.width + 10,option2.height+10),
+    k.color(rgb(216, 231, 230)),
+    k.area(),
+    "destroy",
+    k.z(0),
+    ])
+
+    k.tween(0,1,1,(opa)=> rat.opacity =opa);
+
+    k.wait(1,() =>{
+    k.tween(0,1,1,(opa) => (text.opacity=opa,textbox.opacity = opa))
+})
+
+k.wait(2,()=> {
+    k.tween(0,1,1,(opa) => (option1.opacity=opa,option2.opacity=opa,textbox2.opacity=opa,textbox3.opacity =opa))
+})
+
+ k.onHover("option", (option)=> {
+option.scaleTo(1.3)
+})
+
+ k.onHoverEnd("option", (option)=> {
+option.scaleTo(1)
+})
+
+ k.onClick("option" , () => {
+    k.destroyAll("destroy")
+    k.tween(50,700,3,(pos)=> rat.pos.x = pos)
+    k.tween(50,200,3,(pos)=> rat.pos.y=pos)
+    k.tween(0.5,0,3,(sca) => rat.scaleTo(sca))
+})
+
+})
+
+k.go("rat");
+
