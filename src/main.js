@@ -8,6 +8,7 @@ k.loadRoot("./"); // A good idea for Itch.io publishing later
 k.loadFont("title", "fonts/BBHBogle-Regular.ttf")
 k.loadFont("sub","fonts/BebasNeue-Regular.ttf")
 k.loadFont("darksoul","fonts/OptimusPrinceps.ttf")
+k.loadFont("bold","fonts/Boldonse-Regular.ttf")
 
 k.loadSound("chime","audio/chime.mp3")
 k.loadSound("badchime","audio/badchime.mp3")
@@ -21,6 +22,33 @@ k.loadSprite("blackhole", "sprites/blackhole.png",
     {sliceX:7 , anims: 
         {idle : {from :0 , to : 6,loop:true ,speed:3}
 }})
+k.loadSprite("stars","sprites/starsbackground.png",
+    {sliceX:2,anims:
+        {idle: {from :0,to:1,loop:true,speed:1.3}}
+    
+})
+
+k.loadSprite("earth","sprites/earthbackground.png",
+    {sliceX:2,anims:
+        {idle: {from :0,to:1,loop:true,speed:1.3}}
+    
+})    
+
+k.loadSprite("levelbg","sprites/levelbackground.png", {sliceX:2 ,anims:
+    {"idle": {from:0,to:1,loop:true,speed:0.5}}
+
+})
+
+const earth = [
+    "earth1",
+    "earth2",
+    "earth3",
+    "earth4"
+]
+
+for (const name of earth){
+    k.loadSprite(name,`sprites/${name}.png`)
+}
 
 const stars = [ 
     "star1",
@@ -84,15 +112,94 @@ k.scene("menu", ()=> {
 })
 
 k.scene("levels", () => {
-//k.add ([
-//  k.sprite ("levelbackground")])
+k.add ([
+  k.sprite ("levelbg",{anim:"idle"})])
+
+k.add([
+    k.text("Level selector",{font:"bold",size:20}),
+    k.pos(90,50),
+    k.color(rgb(0,0,0)),
+    
+])
+//ew collisions 
+const starc =k.add([
+    k.rect(50,50,),
+    k.opacity(0.4),
+    k.pos(130,270),
+    k.color(rgb(247, 251, 247)),
+    k.z(10),
+    k.area(),
+    k.body(),
+    "starc"
+])
+
+const earthc =k.add([
+    k.rect(50,50,),
+    k.opacity(0.4),
+    k.pos(185,170),
+    k.color(rgb(247, 251, 247)),
+    k.z(10),
+    k.area(),
+    k.body(),
+    "earthc"
+])
+
+const ratc =k.add([
+    k.rect(50,50,),
+    k.opacity(0.4),
+    k.pos(340,100),
+    k.color(rgb(247, 251, 247)),
+    k.z(10),
+    k.area(),
+    k.body(),
+    "ratc"
+])
+
+const bookc =k.add([
+    k.rect(50,50,),
+    k.opacity(0.4),
+    k.pos(450,220),
+    k.color(rgb(247, 251, 247)),
+    k.z(10),
+    k.area(),
+    k.body(),
+    "bookc"
+])
+
+const blackholec =k.add([
+    k.rect(50,50,),
+    k.opacity(0.4),
+    k.pos(290,280),
+    k.color(rgb(247, 251, 247)),
+    k.z(10),
+    k.area(),
+    k.body(),
+    "blackholec"
+])
+
+
+
+
+//phew collisons end 
 
 })
 
 
 k.scene("game",()=> {
 
-    k.setBackground(rgb(30, 30, 34))
+    k.setBackground(rgb(10, 10, 11))
+
+    if (currentlevel === 1){
+        k.add ([
+            k.sprite("stars", {anim:"idle"})
+        ])
+    }
+
+    if (currentlevel === 2 ) {
+        k.add([
+            k.sprite("earth", {anim:"idle"})
+        ])
+    }
 
     const blackhole = k.add([
         k.pos(590, 160), 
@@ -120,7 +227,8 @@ let n =0 ;
 
     const outline = k.add([
         k.rect(30,130 ,{fill:false}),
-        k.outline(6),
+        k.color(rgb(255, 255, 255)),
+        k.outline(6,rgb(241, 246, 241)),
         k.pos(50,350),
         k.rotate(183),
         k.z(3)
@@ -138,6 +246,7 @@ let score =0;
         if (n>=10){
             k.tween(0,1,0.8, (opa)=> flash.opacity = opa)
             k.play("flash")
+            k.tween(1,0,0.8,(opa)=> blackhole.opacity = opa)
             k.wait (1.3, () => {
                 k.go("won", currentlevel)
             })}
@@ -189,7 +298,7 @@ let score =0;
 
 
         k.onUpdate("thing", (thing) => {
-            thing.move(-thing.speed,0);
+            thing.move(-thing.speed -score*2,0);
             if (thing.pos.x <-120){
                 k.destroy(thing)
         }})
@@ -223,27 +332,27 @@ const blackholesound = k.play("blackholevoices", {volume:0,loop:true},"bsound")
         }
         });
         
-
+//end of spooky balckhole
 
 if (currentlevel === 0){
     spawnthings(stars,100,150);
 }
-//if (currentlevel === 1){
-//    spawnthings(earth,100,180);
-//}
-//if (currentlevel === 2){
-//    throwthings(ratticus)
-//}
-//if (currentlevel===3){
-//    spawnthings(books,120,190)
-//}
+if (currentlevel === 1){
+    spawnthings(earth,120,180);
+}
+if (currentlevel === 2){
+    throwthings(ratticus)
+}
+if (currentlevel===3){
+   spawnthings(books,120,190)
+}
     });
 
 
 
 k.scene("won", (level)=> {
 
-    k.setBackground(rgb(25, 11, 11))
+    k.setBackground(rgb(0, 0, 0))
 
     let levelname ;
 
@@ -254,28 +363,31 @@ k.scene("won", (level)=> {
         levelname = "earth"
     }
 
-//    k.add([
-//        k.sprite(`${levelname}`, {anim:"idle"})
-//    ])
+    k.add([
+       k.sprite(levelname, {anim:"idle"},
+        k.opacity(0.8),
+        
+       )
+  ])
 
     k.add ([
-    k.text (`You collected the ${levelname} suucessfully !`,{font: "",size:25}),
+    k.text (`You collected the ${levelname} suucessfully !`,{font: "bold",size:25}),
     k.pos(300,100),
-    k.color(rgb(31, 94, 146)),
+    k.color(rgb(223, 231, 237)),
     k.scale(),
     k.anchor("center"),
     "title"
     ])
 
     const option = k.add ([
-        k.text("Go to levels? ", {font:"",size:20,transform: () => ({
+        k.text("Go to levels? ", {font:"bold",size:20,transform: () => ({
             color: k.hsl2rgb((k.time() * 0.2 ) % 1, 0.7, 0.8)})}),
         k.area(),
         k.body(),
         k.scale(),
-        k.opacity(0.2),
+        k.opacity(0.6),
         "option",
-        k.pos(200,200)
+        k.pos(200,180)
 
 
     ])
@@ -310,10 +422,11 @@ k.scene("gameover" , () => {
     const back = k.add([
         "back",
         k.text(" Back to game",{font:"darksoul",size:24}),
-        k.pos(250,200),
+        k.pos(250,230),
         k.scale(),
         k.area(),
         k.body(),
+        k.anchor("center")
     ])
 
     k.tween(0,1,2,(opa) => back.opacity = opa )
@@ -339,4 +452,4 @@ k.scene("gameover" , () => {
 
 
 
-k.go("menu");
+k.go("levels");
