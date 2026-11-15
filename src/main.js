@@ -10,11 +10,13 @@ k.loadFont("sub","fonts/BebasNeue-Regular.ttf")
 k.loadFont("darksoul","fonts/OptimusPrinceps.ttf")
 k.loadFont("bold","fonts/Boldonse-Regular.ttf")
 
+k.loadSound("rat","audio/rat.mp3")
 k.loadSound("chime","audio/chime.mp3")
 k.loadSound("badchime","audio/badchime.mp3")
 k.loadSound("death","audio/death.mp3")
 k.loadSound("blackholevoices","audio/blackholesound.mp3")
 k.loadSound("flash", "audio/flash.mp3")
+k.loadSound("menu","audio/menu.mp3")
 
 k.loadSprite("bomb", "sprites/bomb.png")
 k.loadSprite("menu","sprites/menu.jpg")
@@ -63,11 +65,23 @@ for (const name of stars){
 }
 
 
+const books = [
+    "book1",
+    "book2",
+    "book3",
+    "book4",
+]
+
+for (const name of books){
+    k.loadSprite(name,`sprites/${name}.png`)
+}
+
 let currentlevel =0;
 
 
 
 k.scene("menu", ()=> {
+    const music = k.play("menu",{volume:0.2})
     k.setBackground(BLACK)
 
     const menu =k.add([
@@ -107,6 +121,7 @@ k.scene("menu", ()=> {
     })
 
     k.onClick("start", ()=>{
+        music.paused =true;
         k.go("levels")
     })
 
@@ -228,6 +243,13 @@ k.scene("game",()=> {
             k.sprite("earth", {anim:"idle"}),
             k.opacity(0.7),
         ])
+    }
+
+    if (currentlevel ===3 || currentlevel ===4 ){
+        k.add([
+            k.sprite("earth", {anim:"idle"}),
+            k.opacity(0.7),
+        ])        
     }
 
     const blackhole = k.add([
@@ -394,12 +416,18 @@ k.scene("won", (level)=> {
         levelname = "earth"
     }
 
+    if (level === 3){
+        levelname = "books"
+    }
+
+    if (level ===0 ||level === 1){
     k.add([
        k.sprite(levelname, {anim:"idle"},
         k.opacity(0.8),
         
        )
   ])
+    }
 
     k.add ([
     k.text (`You collected the ${levelname} suucessfully !`,{font: "bold",size:25}),
@@ -569,6 +597,7 @@ const option1 =k.add([
     k.area(),
     "destroy",
     k.z(0),
+    k.opacity(0)
     ])
 
     k.tween(0,1,1,(opa)=> rat.opacity =opa);
@@ -594,9 +623,14 @@ option.scaleTo(1)
     k.tween(50,700,3,(pos)=> rat.pos.x = pos)
     k.tween(50,200,3,(pos)=> rat.pos.y=pos)
     k.tween(0.5,0,3,(sca) => rat.scaleTo(sca))
-})
+    k.play("rat")
+    k.wait(3.5,()=>{
+        k.go("levels")
+    })
 
 })
 
-k.go("rat");
+})
+
+k.go("menu");
 
