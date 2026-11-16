@@ -6,6 +6,8 @@ core gameplay : Click on things which fly on the screen (its that simple) :D
 Level selector: select the levels by clicking on the icons ( Do by numerical order to get a chronological storyline which is coherent thanks ;>) )
 (ps. sometimes you would have to hover over things to click on them to transaport to next scene or so )
 
+## How to play: 
+Its hosted on itch so go by this link and ensure you are in fullscreen mode while playing the game : https://reaous.itch.io/blackhle-radiation
 ### Screenshots :
 <img width="1900" height="1010" alt="12" src="https://github.com/user-attachments/assets/c7c0563e-8193-496e-a5b7-c0be6e7292be" />
 
@@ -23,7 +25,7 @@ Level selector: select the levels by clicking on the icons ( Do by numerical ord
 It was made with Kaplay , a no gui javascript based framework specialised for game development !
 
 ## About this
-This game was my attempt at making the so called general term of a "game"
+This game was my attempt at making the so called general term of a "game" , with things like levels , a gameplayloop, something fun (like catching the stars ) etc etc ...It was fun to learn a new thing ;D
 
 ### Credits 
 To the amazing developers at kaplay , pixabay(for sound ), and really all open source maintainers for making this silly little game possible.
